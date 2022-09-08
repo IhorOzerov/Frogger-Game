@@ -4,10 +4,9 @@ const yStart = 0;
 const xStart = 0;
 
 const enemyConst = {
-    startSpeed: 200,
-    refresh: -50,
+    refresh: -101,
     locations: [62, 144, 228],
-    speed: (Math.random() * 200) + 150,
+    speed: (Math.random() * 200) + 200,
     sprite: "images/enemy-bug.png"
 }
 
@@ -22,12 +21,20 @@ const playerConst = {
     rightBorder: 400
 }
 
-const Enemy = function(x, y) {
+const Enemy = function (x, y) {
     this.x = x;
     this.y = y;
-    this.speed = enemyConst.startSpeed;
+    this.speed = enemyConst.speed;
     this.sprite = enemyConst.sprite;
-};
+}; 
+
+const allEnemies = [];
+
+enemyConst.locations.forEach(function(enemyY){
+    const startPoint = Math.random()*canvasWidth;
+    const enemy = new Enemy(startPoint, enemyY, enemyConst.speed);
+    allEnemies.push(enemy);
+});
 
 Enemy.prototype.update = function(dt) {
     this.x += enemyConst.speed * dt;
@@ -40,7 +47,7 @@ Enemy.prototype.update = function(dt) {
         playerConst.height + player.y > this.y){
             player.x = playerConst.x;
             player.y = playerConst.y;
-        }
+    }
 };
 
 Enemy.prototype.render = function() {
@@ -52,6 +59,7 @@ const Player = function() {
     this.y = playerConst.y;
     this.sprite = playerConst.sprite;
 };
+const player = new Player;
 
 Player.prototype.update = function (){ 
     if(this.y < yStart){
@@ -61,7 +69,7 @@ Player.prototype.update = function (){
     }, refreshTime);
 }} 
 
-Player.prototype.render = function  (){
+Player.prototype.render = function(){
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 } 
 
@@ -79,18 +87,7 @@ Player.prototype.handleInput = function (allowKey){
         this.y += playerConst.stepY;
     }
 } 
-const player = new Player;
-
-const allEnemies = [];
-
-const enemies = (function(){
-    for(let i = 0; i < enemyConst.locations.length; i++){
-        const startPoint = Math.random()*canvasWidth;
-        allEnemies.push(new Enemy(startPoint, enemyConst.locations[i]))
-    }
-}())
-
-
+ 
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
         37: 'left',
